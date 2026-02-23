@@ -29,8 +29,9 @@ interface Project {
 }
 
 // --- Shared Styles ---
-const CARD_HOVER_STYLES =
-  "transition-all duration-300 ease-out hover:-translate-y-2 hover:border-zinc-900 dark:hover:border-zinc-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_40px_rgba(255,255,255,0.05)]";
+// Restricts CSS transitions ONLY to colors and shadows. Layout/transforms are handled by Framer Motion.
+const SHARED_CARD_STYLES =
+  "transition-[border-color,box-shadow] duration-300 hover:border-zinc-900 dark:hover:border-zinc-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_40px_rgba(255,255,255,0.05)]";
 
 // --- Sub-Components ---
 
@@ -53,40 +54,48 @@ function SkillCard({ category, list }: { category: string; list: string[] }) {
   return (
     <motion.div
       layout
-      className={`relative p-5 md:p-8 bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl flex flex-col sm:flex-row sm:items-start lg:items-center gap-4 md:gap-6 pr-10 md:pr-16 ${CARD_HOVER_STYLES}`}
+      whileHover={{ y: -8 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className={`relative p-5 md:p-8 bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl flex flex-col sm:flex-row sm:items-start lg:items-center gap-4 md:gap-6 pr-10 md:pr-16 ${SHARED_CARD_STYLES}`}
     >
-      <span className="text-xs md:text-sm font-bold uppercase text-zinc-500 w-full sm:w-32 shrink-0 sm:pt-1 lg:pt-0">
+      <motion.span
+        layout="position"
+        className="text-xs md:text-sm font-bold uppercase text-zinc-500 w-full sm:w-32 shrink-0 sm:pt-1 lg:pt-0"
+      >
         {category.replace("_", " ")}
-      </span>
+      </motion.span>
 
-      <ul
+      <motion.ul
+        layout
         ref={ulRef}
-        className={`flex flex-wrap gap-2 md:gap-3 py-1 overflow-hidden transition-all duration-500 ease-in-out ${
-          isExpanded ? "max-h-250" : "max-h-10 md:max-h-10"
+        className={`flex flex-wrap gap-2 md:gap-3 py-1 overflow-hidden ${
+          isExpanded ? "max-h-[500px]" : "max-h-10 md:max-h-10"
         }`}
       >
         {list.map((skill) => (
-          <li
+          <motion.li
+            layout
             key={skill}
-            className="group text-[12px] md:text-sm font-medium flex items-center gap-1.5 md:gap-2 bg-white dark:bg-zinc-900/80 px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all duration-300 hover:bg-zinc-800 hover:text-white dark:hover:bg-zinc-200 dark:hover:text-zinc-900 cursor-default"
+            className="group text-[12px] md:text-sm font-medium flex items-center gap-1.5 md:gap-2 bg-white dark:bg-zinc-900/80 px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-sm transition-colors duration-300 hover:bg-zinc-800 hover:text-white dark:hover:bg-zinc-200 dark:hover:text-zinc-900 cursor-default"
           >
             <Zap
               size={12}
-              className="text-zinc-400 shrink-0 group-hover:text-zinc-300 dark:group-hover:text-zinc-600"
+              className="text-zinc-400 shrink-0 group-hover:text-zinc-300 dark:group-hover:text-zinc-600 transition-colors"
             />
             {skill}
-          </li>
+          </motion.li>
         ))}
-      </ul>
+      </motion.ul>
 
       {isOverflowing && (
-        <button
+        <motion.button
+          layout="position"
           onClick={() => setIsExpanded(!isExpanded)}
           className="absolute right-3 top-6 sm:top-1/2 sm:-translate-y-1/2 md:right-6 p-1.5 rounded-full bg-zinc-200/50 dark:bg-zinc-800/50 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
           aria-label="Toggle Skills"
         >
           {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </button>
+        </motion.button>
       )}
     </motion.div>
   );
@@ -111,11 +120,17 @@ function ProjectCard({ project }: { project: Project }) {
   }, [project.description]);
 
   return (
-    <div
-      className={`group flex flex-col justify-between bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 md:p-10 rounded-3xl space-y-6 md:space-y-8 ${CARD_HOVER_STYLES}`}
+    <motion.div
+      layout
+      whileHover={{ y: -8 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className={`group flex flex-col justify-between bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 md:p-10 rounded-3xl space-y-6 md:space-y-8 overflow-hidden ${SHARED_CARD_STYLES}`}
     >
-      <div className="space-y-4">
-        <div className="flex justify-between items-start gap-4">
+      <motion.div layout className="space-y-4">
+        <motion.div
+          layout="position"
+          className="flex justify-between items-start gap-4"
+        >
           <div>
             <h4 className="text-xl md:text-2xl font-bold tracking-tight mb-1">
               {project.title}
@@ -148,21 +163,23 @@ function ProjectCard({ project }: { project: Project }) {
               </a>
             )}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="relative">
-          <p
+        <motion.div layout className="relative">
+          <motion.p
+            layout="position"
             ref={descRef}
-            className={`text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed transition-all duration-300 ${
+            className={`text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed ${
               !isExpanded ? "line-clamp-3" : ""
             }`}
           >
             {project.description}
-          </p>
+          </motion.p>
           {isOverflowing && (
-            <button
+            <motion.button
+              layout="position"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="mt-2 text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1 hover:underline"
+              className="mt-2 text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1 hover:underline focus:outline-none"
             >
               {isExpanded ? (
                 <>
@@ -173,22 +190,22 @@ function ProjectCard({ project }: { project: Project }) {
                   ... Read More <ChevronDown size={12} />
                 </>
               )}
-            </button>
+            </motion.button>
           )}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      <div className="flex flex-wrap gap-2">
+      <motion.div layout="position" className="flex flex-wrap gap-2">
         {project.tags.map((tag) => (
           <span
             key={tag}
-            className="text-[10px] md:text-xs font-semibold px-2.5 py-1 bg-zinc-200/50 dark:bg-zinc-800/50 text-zinc-700 dark:text-zinc-300 rounded-full transition-all hover:bg-zinc-800 hover:text-white dark:hover:bg-zinc-200 dark:hover:text-zinc-900 cursor-default"
+            className="text-[10px] md:text-xs font-semibold px-2.5 py-1 bg-zinc-200/50 dark:bg-zinc-800/50 text-zinc-700 dark:text-zinc-300 rounded-full transition-colors hover:bg-zinc-800 hover:text-white dark:hover:bg-zinc-200 dark:hover:text-zinc-900 cursor-default"
           >
             {tag}
           </span>
         ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
