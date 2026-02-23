@@ -237,7 +237,7 @@ export default function App() {
   };
 
   return (
-    <main className="selection:bg-zinc-800 selection:text-white dark:selection:bg-zinc-200 dark:selection:text-black min-h-screen overflow-x-hidden">
+    <main className="selection:bg-zinc-800 selection:text-white dark:selection:bg-zinc-200 dark:selection:text-black h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-proximity scroll-smooth scroll-pt-16">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 w-full z-50 border-b border-zinc-200/50 dark:border-zinc-800/50 backdrop-blur-2xl bg-white/30 dark:bg-[#09090b]/30">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
@@ -248,7 +248,6 @@ export default function App() {
               className="w-7 h-7 md:w-8 md:h-8 rounded-full object-cover border border-zinc-200 dark:border-zinc-800 shadow-sm"
               onError={(e) => (e.currentTarget.style.display = "none")}
             />
-            {/* MODIFIED: Removed truncate and max-width to show full name */}
             <span className="font-bold tracking-tight text-xs md:text-sm whitespace-nowrap">
               {personalInfo.name}
             </span>
@@ -277,13 +276,12 @@ export default function App() {
         </div>
       </nav>
 
-      {/* MODIFIED: Reduced global space-y from 24/40 to 16/24 */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-16 md:space-y-24 py-12 md:py-20">
+      {/* Main Content Wrapper */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* HERO SECTION */}
-        {/* MODIFIED: Reduced min-h from 60/70vh to 50vh and tightened spacing */}
         <section
           id="hero"
-          className="min-h-[50vh] flex flex-col justify-center pt-8"
+          className="min-h-screen flex flex-col justify-center snap-start pt-16 pb-8"
         >
           <motion.div
             variants={container}
@@ -353,106 +351,111 @@ export default function App() {
         {/* SKILLS SECTION */}
         <section
           id="skills"
-          className="grid lg:grid-cols-[1fr_2fr] gap-8 md:gap-12 items-start pt-10 md:pt-16 border-t border-zinc-200 dark:border-zinc-800"
+          className="min-h-screen flex flex-col justify-center snap-start py-16"
         >
-          <div className="lg:sticky lg:top-32 space-y-2 md:space-y-4">
-            <h2 className="text-[10px] md:text-sm font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
-              <Cpu size={14} /> Technical Skills
-            </h2>
-            <h3 className="text-2xl md:text-4xl font-extrabold tracking-tight">
-              Technologies & Tools
-            </h3>
-            <p className="text-zinc-500 text-xs md:text-sm max-w-sm leading-relaxed">
-              Bridging engineering fundamentals with cutting-edge AI to ship
-              products that solve real problems.
-            </p>
-          </div>
-          <div className="flex flex-col gap-4">
-            {Object.entries(skills).map(([cat, list]) => (
-              <SkillCard key={cat} category={cat} list={list as string[]} />
-            ))}
+          <div className="grid lg:grid-cols-[1fr_2fr] gap-8 md:gap-12 items-start w-full border-t border-zinc-200 dark:border-zinc-800 pt-8 md:pt-16">
+            <div className="lg:sticky lg:top-32 space-y-2 md:space-y-4">
+              <h2 className="text-[10px] md:text-sm font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+                <Cpu size={14} /> Technical Skills
+              </h2>
+              <h3 className="text-2xl md:text-4xl font-extrabold tracking-tight">
+                Technologies & Tools
+              </h3>
+              <p className="text-zinc-500 text-xs md:text-sm max-w-sm leading-relaxed">
+                Bridging engineering fundamentals with cutting-edge AI to ship
+                products that solve real problems.
+              </p>
+            </div>
+            <div className="flex flex-col gap-4">
+              {Object.entries(skills).map(([cat, list]) => (
+                <SkillCard key={cat} category={cat} list={list as string[]} />
+              ))}
+            </div>
           </div>
         </section>
 
         {/* EXPERIENCE & EDUCATION */}
         <section
           id="experience"
-          className="grid lg:grid-cols-[1fr_2fr] gap-12 items-start pt-10 md:pt-16 border-t border-zinc-200 dark:border-zinc-800"
+          className="min-h-screen flex flex-col justify-center snap-start py-16"
         >
-          <div className="lg:sticky lg:top-32 space-y-2 md:space-y-4">
-            <h2 className="text-[10px] md:text-sm font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
-              <Layers size={14} /> Background
-            </h2>
-            <h3 className="text-2xl md:text-4xl font-extrabold tracking-tight">
-              Experience & Education
-            </h3>
-          </div>
-          <div className="space-y-12 md:space-y-16">
-            <div className="space-y-6 md:space-y-8">
-              <h4 className="flex items-center gap-2 text-base md:text-lg font-bold pb-4 border-b border-zinc-200 dark:border-zinc-800">
-                <Briefcase size={18} className="text-zinc-400" /> Work
-                Experience
-              </h4>
-              <div className="space-y-8">
-                {experience.map((job, idx) => (
-                  <div
-                    key={idx}
-                    className="group relative pl-5 md:pl-6 border-l-2 border-zinc-200 dark:border-zinc-800 space-y-2 md:space-y-3"
-                  >
-                    <div className="absolute w-2.5 h-2.5 bg-white dark:bg-black border-2 border-zinc-300 dark:border-zinc-600 rounded-full -left-1.5 md:-left-1.75 top-1.5" />
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
-                      <h5 className="text-lg md:text-xl font-bold leading-tight">
-                        {job.role}
-                      </h5>
-                      <span className="text-xs md:text-sm font-semibold text-zinc-500">
-                        {job.duration}
-                      </span>
-                    </div>
-                    <p className="text-sm md:text-base font-medium text-zinc-600 dark:text-zinc-400">
-                      {job.company} — {job.location}
-                    </p>
-                    <ul className="space-y-2 pt-1 md:pt-2">
-                      {job.bullets.map((bullet, i) => (
-                        <li
-                          key={i}
-                          className="text-[13px] md:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed flex items-start gap-2"
-                        >
-                          <span className="mt-1.5 md:mt-2 w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0" />
-                          {bullet}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
+          <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-start w-full border-t border-zinc-200 dark:border-zinc-800 pt-8 md:pt-16">
+            <div className="lg:sticky lg:top-32 space-y-2 md:space-y-4">
+              <h2 className="text-[10px] md:text-sm font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+                <Layers size={14} /> Background
+              </h2>
+              <h3 className="text-2xl md:text-4xl font-extrabold tracking-tight">
+                Experience & Education
+              </h3>
             </div>
-            <div className="space-y-6 md:space-y-8">
-              <h4 className="flex items-center gap-2 text-base md:text-lg font-bold pb-4 border-b border-zinc-200 dark:border-zinc-800">
-                <GraduationCap size={18} className="text-zinc-400" /> Education
-              </h4>
-              <div className="space-y-6">
-                {education.map((edu, idx) => (
-                  <div
-                    key={idx}
-                    className="group relative pl-5 md:pl-6 border-l-2 border-zinc-200 dark:border-zinc-800 space-y-1.5 md:space-y-2"
-                  >
-                    <div className="absolute w-2.5 h-2.5 bg-white dark:bg-black border-2 border-zinc-300 dark:border-zinc-600 rounded-full -left-1.5 md:-left-1.75 top-1.5" />
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
-                      <h5 className="text-base md:text-lg font-bold leading-tight">
-                        {edu.degree}
-                      </h5>
-                      <span className="text-xs md:text-sm font-semibold text-zinc-500">
-                        {edu.date}
-                      </span>
+            <div className="space-y-12 md:space-y-16">
+              <div className="space-y-6 md:space-y-8">
+                <h4 className="flex items-center gap-2 text-base md:text-lg font-bold pb-4 border-b border-zinc-200 dark:border-zinc-800">
+                  <Briefcase size={18} className="text-zinc-400" /> Work
+                  Experience
+                </h4>
+                <div className="space-y-8">
+                  {experience.map((job, idx) => (
+                    <div
+                      key={idx}
+                      className="group relative pl-5 md:pl-6 border-l-2 border-zinc-200 dark:border-zinc-800 space-y-2 md:space-y-3"
+                    >
+                      <div className="absolute w-2.5 h-2.5 bg-white dark:bg-black border-2 border-zinc-300 dark:border-zinc-600 rounded-full -left-1.5 md:-left-1.75 top-1.5" />
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
+                        <h5 className="text-lg md:text-xl font-bold leading-tight">
+                          {job.role}
+                        </h5>
+                        <span className="text-xs md:text-sm font-semibold text-zinc-500">
+                          {job.duration}
+                        </span>
+                      </div>
+                      <p className="text-sm md:text-base font-medium text-zinc-600 dark:text-zinc-400">
+                        {job.company} — {job.location}
+                      </p>
+                      <ul className="space-y-2 pt-1 md:pt-2">
+                        {job.bullets.map((bullet, i) => (
+                          <li
+                            key={i}
+                            className="text-[13px] md:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed flex items-start gap-2"
+                          >
+                            <span className="mt-1.5 md:mt-2 w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0" />
+                            {bullet}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                    <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400">
-                      {edu.institution}
-                    </p>
-                    <p className="text-xs md:text-sm font-semibold text-zinc-500">
-                      {edu.details}
-                    </p>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-6 md:space-y-8">
+                <h4 className="flex items-center gap-2 text-base md:text-lg font-bold pb-4 border-b border-zinc-200 dark:border-zinc-800">
+                  <GraduationCap size={18} className="text-zinc-400" />{" "}
+                  Education
+                </h4>
+                <div className="space-y-6">
+                  {education.map((edu, idx) => (
+                    <div
+                      key={idx}
+                      className="group relative pl-5 md:pl-6 border-l-2 border-zinc-200 dark:border-zinc-800 space-y-1.5 md:space-y-2"
+                    >
+                      <div className="absolute w-2.5 h-2.5 bg-white dark:bg-black border-2 border-zinc-300 dark:border-zinc-600 rounded-full -left-1.5 md:-left-1.75 top-1.5" />
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
+                        <h5 className="text-base md:text-lg font-bold leading-tight">
+                          {edu.degree}
+                        </h5>
+                        <span className="text-xs md:text-sm font-semibold text-zinc-500">
+                          {edu.date}
+                        </span>
+                      </div>
+                      <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400">
+                        {edu.institution}
+                      </p>
+                      <p className="text-xs md:text-sm font-semibold text-zinc-500">
+                        {edu.details}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -461,28 +464,29 @@ export default function App() {
         {/* PROJECTS SECTION */}
         <section
           id="projects"
-          className="pt-10 md:pt-16 border-t border-zinc-200 dark:border-zinc-800 space-y-8 md:space-y-12"
+          className="min-h-screen flex flex-col justify-center snap-start py-16"
         >
-          <div className="space-y-2 md:space-y-4">
-            <h2 className="text-[10px] md:text-sm font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
-              <Code2 size={14} /> Portfolio
-            </h2>
-            <h3 className="text-2xl md:text-4xl font-extrabold tracking-tight">
-              Featured Projects
-            </h3>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
-            {projects.map((project, i) => (
-              <ProjectCard key={i} project={project} />
-            ))}
+          <div className="space-y-8 md:space-y-12 w-full border-t border-zinc-200 dark:border-zinc-800 pt-8 md:pt-16">
+            <div className="space-y-2 md:space-y-4">
+              <h2 className="text-[10px] md:text-sm font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+                <Code2 size={14} /> Portfolio
+              </h2>
+              <h3 className="text-2xl md:text-4xl font-extrabold tracking-tight">
+                Featured Projects
+              </h3>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
+              {projects.map((project, i) => (
+                <ProjectCard key={i} project={project} />
+              ))}
+            </div>
           </div>
         </section>
 
         {/* Footer */}
-        {/* MODIFIED: Reduced py-8 to py-4 and mt-16 to mt-8 */}
         <footer
           id="contact"
-          className="py-4 mt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col-reverse md:flex-row justify-between items-center gap-6"
+          className="snap-start py-8 mt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col-reverse md:flex-row justify-between items-center gap-6"
         >
           <div className="text-center md:text-left">
             <p className="text-xs md:text-sm font-medium text-zinc-500">

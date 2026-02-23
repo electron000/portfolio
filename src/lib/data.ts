@@ -39,7 +39,7 @@ export const portfolioData = {
   },
   experience: [
     {
-      role: "AI Engineer",
+      role: "AI Engineer Intern",
       company: "eSkillVeda Edtech Private Limited",
       location: "Guwahati, Assam, India (Remote)",
       duration: "June 2025 — Aug 2025",
@@ -59,7 +59,7 @@ export const portfolioData = {
       ],
     },
     {
-      role: "Frontend Developer",
+      role: "Frontend Developer Intern",
       company: "expLocal",
       location: "Bangalore, Karnataka, India (Remote)",
       duration: "Oct 2025 — Present",

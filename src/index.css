@@ -14,6 +14,15 @@
   --grid-color: rgba(255, 255, 255, 0.05);
 }
 
+/* Global Color Transition Fallback
+  Applies smooth fading to all theme-related properties without breaking layout or transforms.
+*/
+*, ::before, ::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
 body {
   background-color: var(--background);
   background-image: 
