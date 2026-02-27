@@ -71,18 +71,19 @@ export const portfolioData = {
   ],
   projects: [
     {
-      title: "MAINSYS",
+      title: "mainsys",
       subtitle: "Management Information System",
       description:
         "Developed a management information system with live table editing, smart filters, and export options. Packaged into an offline desktop app using Electron & PyInstaller.",
       tags: ["React.js", "Flask", "SQLite", "Electron", "PyInstaller"],
+      image: "/mainsys-preview.webp",
       links: {
         github: "https://github.com/electron000/frontend",
         external: "https://mainsys.vercel.app",
       },
     },
     {
-      title: "LegalMate",
+      title: "LEGALMATE",
       subtitle: "AI-Powered Legal Platform",
       description:
         "Architected a full-stack legal platform with a React frontend and scalable FastAPI microservices (AI Agents, DocGen, Blogs). Features two RAG-based Legal Agents for Indian citizens and legal practitioners, alongside a Document Analyzer powered by Google Gemini, ChromaDB & Tavily Web Search. Built automated document generation and designed for modular deployment.",
@@ -94,20 +95,10 @@ export const portfolioData = {
         "ChromaDB",
         "Tavily",
       ],
+      image: "/legalmate-preview.webp",
       links: {
         github: "https://github.com/electron000/LegalMate",
         external: "https://ai-legalmate.vercel.app",
-      },
-    },
-    {
-      title: "AI Tutor Orchestrator",
-      subtitle: "Autonomous AI Agent Orchestrator",
-      description:
-        "Architected a hybrid AI agent using LangGraph for multi-step reasoning, connecting AI tutors with educational APIs for adaptive learning.",
-      tags: ["Python", "FastAPI", "LangChain", "LangGraph", "GeminiAPI"],
-      links: {
-        github: "https://github.com/electron000/autonomous_tutor_orchestrator",
-        external: "#", // Leaving this as "#" ensures the Globe icon won't render for this project
       },
     },
   ],

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { portfolioData } from "./lib/data";
 import { motion, type Variants } from "framer-motion";
 import {
@@ -26,6 +26,7 @@ interface Project {
   description: string;
   tags: string[];
   links: { github: string; external: string };
+  image?: string;
 }
 
 // --- Shared Styles ---
@@ -69,7 +70,7 @@ function SkillCard({ category, list }: { category: string; list: string[] }) {
         layout
         ref={ulRef}
         className={`flex flex-wrap gap-2 md:gap-3 py-1 overflow-hidden ${
-          isExpanded ? "max-h-[500px]" : "max-h-10 md:max-h-10"
+          isExpanded ? "max-h-125" : "max-h-10 md:max-h-10"
         }`}
       >
         {list.map((skill) => (
@@ -124,86 +125,111 @@ function ProjectCard({ project }: { project: Project }) {
       layout
       whileHover={{ y: -8 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className={`group flex flex-col justify-between bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 md:p-10 rounded-3xl space-y-6 md:space-y-8 overflow-hidden ${SHARED_CARD_STYLES}`}
+      className={`group flex flex-col bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 md:p-10 rounded-3xl overflow-hidden ${SHARED_CARD_STYLES}`}
     >
-      <motion.div layout className="space-y-4">
+      {/* NEW: Image Preview Section */}
+      {project.image && (
         <motion.div
           layout="position"
-          className="flex justify-between items-start gap-4"
+          className="w-full aspect-video mb-6 md:mb-8 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shrink-0 bg-zinc-200 dark:bg-zinc-800 relative"
         >
-          <div>
-            <h4 className="text-xl md:text-2xl font-bold tracking-tight mb-1">
-              {project.title}
-            </h4>
-            <p className="text-xs md:text-sm font-medium text-zinc-500">
-              {project.subtitle}
-            </p>
-          </div>
-          <div className="flex gap-2 shrink-0">
-            {project.links.github !== "#" && (
-              <a
-                href={project.links.github}
-                target="_blank"
-                rel="noreferrer"
-                className="p-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
-                aria-label="GitHub Repository"
-              >
-                <Github size={16} />
-              </a>
-            )}
-            {project.links.external !== "#" && (
-              <a
-                href={project.links.external}
-                target="_blank"
-                rel="noreferrer"
-                className="p-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
-                aria-label="Live Demo"
-              >
-                <Globe size={16} />
-              </a>
-            )}
-          </div>
-        </motion.div>
+          {/* Subtle skeleton loader effect underneath */}
+          <div className="absolute inset-0 animate-pulse bg-zinc-300 dark:bg-zinc-700 -z-10" />
 
-        <motion.div layout className="relative">
-          <motion.p
+          <img
+            src={project.image}
+            alt={`${project.title} live preview`}
+            loading="lazy"
+            // MODIFIED: Removed transition and group-hover classes
+            className="w-full h-full object-cover object-top"
+          />
+        </motion.div>
+      )}
+
+      {/* Existing Content Section */}
+      <motion.div
+        layout
+        className="flex flex-col flex-1 justify-between space-y-6 md:space-y-8"
+      >
+        <div className="space-y-4">
+          <motion.div
             layout="position"
-            ref={descRef}
-            className={`text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed ${
-              !isExpanded ? "line-clamp-3" : ""
-            }`}
+            className="flex justify-between items-start gap-4"
           >
-            {project.description}
-          </motion.p>
-          {isOverflowing && (
-            <motion.button
-              layout="position"
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="mt-2 text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1 hover:underline focus:outline-none"
-            >
-              {isExpanded ? (
-                <>
-                  Show Less <ChevronUp size={12} />
-                </>
-              ) : (
-                <>
-                  ... Read More <ChevronDown size={12} />
-                </>
+            <div>
+              <h4 className="text-xl md:text-2xl font-bold tracking-tight mb-1">
+                {project.title}
+              </h4>
+              <p className="text-xs md:text-sm font-medium text-zinc-500">
+                {project.subtitle}
+              </p>
+            </div>
+            <div className="flex gap-2 shrink-0">
+              {project.links.github !== "#" && (
+                <a
+                  href={project.links.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+                  aria-label="GitHub Repository"
+                >
+                  <Github size={16} />
+                </a>
               )}
-            </motion.button>
-          )}
-        </motion.div>
-      </motion.div>
+              {project.links.external !== "#" && (
+                <a
+                  href={project.links.external}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+                  aria-label="Live Demo"
+                >
+                  <Globe size={16} />
+                </a>
+              )}
+            </div>
+          </motion.div>
 
-      <motion.div layout="position" className="flex flex-wrap gap-2">
-        {project.tags.map((tag) => (
-          <span
-            key={tag}
-            className="text-[10px] md:text-xs font-semibold px-2.5 py-1 bg-zinc-200/50 dark:bg-zinc-800/50 text-zinc-700 dark:text-zinc-300 rounded-full transition-colors hover:bg-zinc-800 hover:text-white dark:hover:bg-zinc-200 dark:hover:text-zinc-900 cursor-default"
-          >
-            {tag}
-          </span>
-        ))}
+          <motion.div layout className="relative">
+            <motion.p
+              layout="position"
+              ref={descRef}
+              className={`text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed ${
+                !isExpanded ? "line-clamp-3" : ""
+              }`}
+            >
+              {project.description}
+            </motion.p>
+            {isOverflowing && (
+              <motion.button
+                layout="position"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="mt-2 text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1 hover:underline focus:outline-none"
+              >
+                {isExpanded ? (
+                  <>
+                    Show Less <ChevronUp size={12} />
+                  </>
+                ) : (
+                  <>
+                    ... Read More <ChevronDown size={12} />
+                  </>
+                )}
+              </motion.button>
+            )}
+          </motion.div>
+        </div>
+
+        <motion.div layout="position" className="flex flex-wrap gap-2 mt-auto">
+          {project.tags.map((tag) => (
+            <span
+              key={tag}
+              className="text-[10px] md:text-xs font-semibold px-2.5 py-1 bg-zinc-200/50 dark:bg-zinc-800/50 text-zinc-700 dark:text-zinc-300 rounded-full transition-colors hover:bg-zinc-800 hover:text-white dark:hover:bg-zinc-200 dark:hover:text-zinc-900 cursor-default"
+            >
+              {tag}
+            </span>
+          ))}
+        </motion.div>
       </motion.div>
     </motion.div>
   );
@@ -227,6 +253,19 @@ const item: Variants = {
   },
 };
 
+// ADDED: New dedicated variant for the hero image
+const imageZoom: Variants = {
+  hidden: { opacity: 0, scale: 0.85 }, // Starts slightly scaled down (inside)
+  show: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.8, // Slightly longer duration for a smoother zoom
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
 export default function App() {
   const { personalInfo, experience, projects, skills, education } =
     portfolioData;
@@ -244,7 +283,7 @@ export default function App() {
     return "light";
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
     localStorage.setItem("theme", theme);
   }, [theme]);
@@ -254,9 +293,9 @@ export default function App() {
   };
 
   return (
-    <main className="selection:bg-zinc-800 selection:text-white dark:selection:bg-zinc-200 dark:selection:text-black h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-proximity scroll-smooth scroll-pt-16">
+    <main className="selection:bg-zinc-800 selection:text-white dark:selection:bg-zinc-200 dark:selection:text-black h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-proximity scroll-smooth scroll-pt-16 transition-colors duration-300">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 w-full z-50 border-b border-zinc-200/50 dark:border-zinc-800/50 backdrop-blur-2xl bg-white/30 dark:bg-[#09090b]/30">
+      <nav className="fixed top-0 left-0 w-full z-50 border-b border-zinc-200/50 dark:border-zinc-800/50 backdrop-blur-2xl bg-white/30 dark:bg-[#09090b]/30 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-3">
             <img
@@ -304,63 +343,86 @@ export default function App() {
             variants={container}
             initial="hidden"
             animate="show"
-            className="space-y-4 md:space-y-6"
+            // Applied flex layout to align text and image side-by-side on larger screens
+            className="flex flex-col-reverse md:flex-row items-center justify-between gap-8 md:gap-12 w-full"
           >
+            {/* Left Column: Text Content */}
+            <div className="space-y-4 md:space-y-6 flex-1 w-full text-center md:text-left">
+              <motion.div
+                variants={item}
+                className="flex items-center gap-2 text-[10px] md:text-sm font-medium text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900 w-fit px-3 py-1.5 md:px-4 md:py-2 rounded-full mx-auto md:mx-0"
+              >
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                Status: {personalInfo.status}
+              </motion.div>
+
+              <motion.div variants={item} className="space-y-2 md:space-y-4">
+                {/* Adjusted text sizing to make room for the image */}
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-none">
+                  {personalInfo.name}
+                </h1>
+                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-zinc-500 max-w-2xl leading-tight mx-auto md:mx-0">
+                  Building{" "}
+                  <span className="text-zinc-900 dark:text-white">
+                    scalable AI pipelines
+                  </span>{" "}
+                  & systems.
+                </h2>
+              </motion.div>
+
+              <motion.p
+                variants={item}
+                className="text-base md:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl leading-relaxed mx-auto md:mx-0"
+              >
+                {personalInfo.summary}
+              </motion.p>
+
+              <motion.div
+                variants={item}
+                className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-6 pt-2"
+              >
+                <a
+                  href={`https://github.com/${personalInfo.github}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs md:text-sm font-semibold uppercase tracking-wider border-b-2 border-transparent pb-1 hover:border-zinc-900 dark:hover:border-white transition-colors flex items-center gap-2"
+                >
+                  <Github size={14} /> GitHub
+                </a>
+                <a
+                  href={`https://linkedin.com/in/${personalInfo.linkedin}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs md:text-sm font-semibold uppercase tracking-wider border-b-2 border-transparent pb-1 hover:border-zinc-900 dark:hover:border-white transition-colors flex items-center gap-2"
+                >
+                  <Linkedin size={14} /> LinkedIn
+                </a>
+                <a
+                  href="/Arunjyoti_Resume.pdf"
+                  download
+                  className="text-xs md:text-sm font-semibold uppercase tracking-wider border-b-2 border-transparent pb-1 hover:border-zinc-900 dark:hover:border-white transition-colors flex items-center gap-2"
+                >
+                  <Download size={14} /> Resume
+                </a>
+              </motion.div>
+            </div>
+
+            {/* Right Column: Profile Image */}
             <motion.div
-              variants={item}
-              className="flex items-center gap-2 text-[10px] md:text-sm font-medium text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900 w-fit px-3 py-1.5 md:px-4 md:py-2 rounded-full"
+              variants={imageZoom} // CHANGED: Replaced 'item' with 'imageZoom'
+              className="w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 shrink-0 relative rounded-full border-2 border-zinc-200 dark:border-zinc-800 shadow-[0_0_40px_rgba(0,0,0,0.1)] dark:shadow-[0_0_40px_rgba(255,255,255,0.1)] transition-all duration-500 overflow-hidden"
             >
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              Status: {personalInfo.status}
-            </motion.div>
+              {/* Skeleton loader */}
+              <div className="absolute inset-0 rounded-full bg-zinc-100/50 dark:bg-zinc-800/50 animate-pulse -z-10" />
 
-            <motion.div variants={item} className="space-y-2 md:space-y-4">
-              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none">
-                {personalInfo.name}
-              </h1>
-              <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-zinc-500 max-w-4xl leading-tight">
-                Building{" "}
-                <span className="text-zinc-900 dark:text-white">
-                  scalable AI pipelines
-                </span>{" "}
-                & systems.
-              </h2>
-            </motion.div>
-
-            <motion.p
-              variants={item}
-              className="text-base md:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl leading-relaxed"
-            >
-              {personalInfo.summary}
-            </motion.p>
-
-            <motion.div
-              variants={item}
-              className="flex flex-wrap gap-4 md:gap-6 pt-2"
-            >
-              <a
-                href={`https://github.com/${personalInfo.github}`}
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs md:text-sm font-semibold uppercase tracking-wider border-b-2 border-transparent pb-1 hover:border-zinc-900 dark:hover:border-white transition-colors flex items-center gap-2"
-              >
-                <Github size={14} /> GitHub
-              </a>
-              <a
-                href={`https://linkedin.com/in/${personalInfo.linkedin}`}
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs md:text-sm font-semibold uppercase tracking-wider border-b-2 border-transparent pb-1 hover:border-zinc-900 dark:hover:white transition-colors flex items-center gap-2"
-              >
-                <Linkedin size={14} /> LinkedIn
-              </a>
-              <a
-                href="/Arunjyoti_Resume.pdf"
-                download
-                className="text-xs md:text-sm font-semibold uppercase tracking-wider border-b-2 border-transparent pb-1 hover:border-zinc-900 dark:hover:border-white transition-colors flex items-center gap-2"
-              >
-                <Download size={14} /> Resume
-              </a>
+              <img
+                src="/arun.webp"
+                alt={personalInfo.name}
+                className="w-full h-full object-contain p-0 transition-all duration-500"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
             </motion.div>
           </motion.div>
         </section>
